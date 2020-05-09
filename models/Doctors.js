@@ -22,7 +22,7 @@ const doctorSchema=new Schema({
         type:String,
         required:true,
     }
-})
+},{timestamps:true})
 doctorSchema.pre('save',async function(next){
     const salt_rounds=10
     console.log(this)
@@ -46,4 +46,4 @@ doctorSchema.methods.verifyPassword= async function(password){
 }
 
 
-module.exports=mongoose.model('Doctors',doctorSchema)
+module.exports=HospitalDb.model('Doctors',doctorSchema)

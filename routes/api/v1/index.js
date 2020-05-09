@@ -5,7 +5,9 @@ const router=express.Router()
 
 router.use('/Authorize/doctors',passport.authenticate(setup.DocApi,{session:false}),require('./Authorize/doctors'))
 
-router.use('/Authorize/patients',require('./Authorize/patients'))
+router.use('/Authorize/patients',passport.authenticate(setup.DocApi,{session:false}),require('./Authorize/patients'))
+
+router.use('/Authorize/reports',passport.authenticate(setup.DocApi,{session:false}),require('./Authorize/reports'))
 
 router.use('/doctors',require('./UnAuthenticated/doctors'))
 

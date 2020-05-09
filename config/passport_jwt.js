@@ -10,12 +10,13 @@ const opts={
 passport.use(setup.DocApi,new jwtStratergy(opts,async (docData,done )=>{
     try{
                 var doc=await doctors.findById(docData.id)
+                console.log(doc)
                 if(!doc)
-                    return done(null,false,'Session expired ')
+                    return done(null,false)
                 return done(null,doc)
                     
     }catch(err)
-    {
+    {   console.log(err)
         return done(err,null)
     } 
 }))

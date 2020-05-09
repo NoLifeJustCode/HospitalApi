@@ -1,6 +1,8 @@
 const doctors=require('../../../models/Doctors')
+const reports=require('../../../models/Reports')
 const jwt=require('jsonwebtoken')
 const setup=require('../../../config/setupProperties')
+
 module.exports.Register=async function(req,res){
     try{
         var doc={}
@@ -34,7 +36,7 @@ module.exports.Register=async function(req,res){
 
 
 module.exports.Login=async function(req,res){
-    try{
+    try{    console.log(req.body)
             var docData=await doctors.findOne({email:req.body.email})
             if(!docData)
                 return res.send(422,{
@@ -59,3 +61,15 @@ module.exports.Login=async function(req,res){
         return res.send(504,{message:err.message})
     }
 }
+
+module.exports.status=async function(req,res){
+    try{
+        var statusReports=await reports.find({
+            Status:req.params.status
+        }).populate('patient','name mobile Age')
+        return res.status(200).json(statusReports)
+    }catch(err){
+        return res.send(504,{message:err.message})
+    }
+}
+

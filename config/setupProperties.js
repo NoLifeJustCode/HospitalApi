@@ -1,6 +1,6 @@
 const setupProps={
     secretKey:"HospitalAPI",
-    jwt_expiry:100000,
+    jwt_expiry:10000000,
     DocApi:'Doctors_Api_jwt'
 }
 
