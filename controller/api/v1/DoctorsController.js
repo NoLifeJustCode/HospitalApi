@@ -55,6 +55,8 @@ module.exports.Login=async function(req,res){
                 return res.send(422,{
                     message:'Invalid Credentials'
                 })
+            if(!req.body.password)
+                return res.send(422,{message:'invalid password'})
             const validatepassword=await docData.verifyPassword(req.body.password)
             if(!validatepassword)
                 return res.send(422,{message:'invalid password'})

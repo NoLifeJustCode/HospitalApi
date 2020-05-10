@@ -51,5 +51,5 @@ doctorSchema.methods.verifyPassword= async function(password){
         return await bcyrpt.compare(password,this.password)
 }
 
-
-module.exports=HospitalDb.model('Doctors',doctorSchema)
+module.exports=mongoose.model('Doctors',doctorSchema)
+// module.exports=HospitalDb.model('Doctors',doctorSchema)

@@ -18,9 +18,9 @@ const reportSchema=new Schema({
   },
   Status:{
       type:String,
-      enum:['Negative','Travelled-Quarantine','Symptoms-Quarantine','Postive-Admit'],
+      enum:['Negative','Travelled-Quarantine','Symptoms-Quarantine','Positive-Admit'],
       required:true,
   }  
 },{timestamps:true})
-
-module.exports=HospitalDb.model('Reports',reportSchema)
+module.exports=mongoose.model('Reports',reportSchema)
+//module.exports=HospitalDb.model('Reports',reportSchema)

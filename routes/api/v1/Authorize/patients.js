@@ -10,5 +10,5 @@ router.post('/Register',patientsController.Register)
 router.post('/:id/create_report',patientsController.createReport)
 
 //Retrieve all reports of particular patient
-router.post('/:id/all_reports',patientsController.all_reports)
+router.get('/:id/all_reports',patientsController.all_reports)
 module.exports=router

@@ -32,4 +32,5 @@ patientSchema.path('mobile').validate(function(mobile){
     console.log(mobileRegex.test(mobile))
     return mobileRegex.test(mobile)
 },'mobile Validtion failed : Mobile number shld be of 10 digits and shld not start with 0')
-module.exports=HospitalDb.model('Patients',patientSchema)
+//module.exports=HospitalDb.model('Patients',patientSchema)
+module.exports=mongoose.model('Patients',patientSchema)
