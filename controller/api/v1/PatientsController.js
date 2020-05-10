@@ -1,14 +1,17 @@
+//import Doctors and patients Model
 const doctors=require('../../../models/Doctors')
 const patients=require('../../../models/Patients')
 const reports=require('../../../models/Reports')
-const jwt=require('jsonwebtoken')
+//import setup to retrieve setup info
 const setup=require('../../../config/setupProperties')
 
-
+/**
+ * Retreive Patient Record if Exists else create one 
+ */
 module.exports.Register=async function(req,res){
     try{
         var doc={}
-        
+        console.log(req.body)
         if(!req.body.mobile||!req.body.Age||!req.body.name)
             return res.send(422,{
                 message:'Invalid Sign up Data'
@@ -25,7 +28,9 @@ module.exports.Register=async function(req,res){
         return res.send(504,err.message)
     }
 }
-
+/**
+ * Create Report or update Report Status with updated time stamps
+ */
 module.exports.createReport=async function(req,res){
     try{
         console.log(req.params)
@@ -40,20 +45,22 @@ module.exports.createReport=async function(req,res){
             patient:patient._id
             },
             {Status:req.body.status},
-            {new :true,upsert:true}
+            {new :true,upsert:true,runValidators:true}
             );
         console.log(report)
         await patient.update({'$addToSet':{Reports:report.id}})
         console.log(patient)
         return res.status(200).json(report)
 
-        return res.status(200).json(patient)
+        
 
     }catch(err){
         return res.send(504,err.message)
     }       
 }
-
+/**
+ * Retrive all Reports of a patient and is currently Authenticated by doctors JWT 
+ */
 module.exports.all_reports=async function(req,res){
     try{
        

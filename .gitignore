@@ -1,1 +1,3 @@
 /node_modules
+/config/passport_local.js
+/routes/api/v1/Authorize/doctors.js

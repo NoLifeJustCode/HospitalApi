@@ -1,5 +1,7 @@
+//import mongoose and HospitalDB connection 
 const mongoose=require('mongoose')
 const HospitalDb=require('../config/mongoose_HospitalDB')
+//import bcrypt to hash password
 const bcyrpt=require('bcrypt')
 const Schema=mongoose.Schema
 
@@ -24,8 +26,10 @@ const patientSchema=new Schema({
     ]
 
 },{timestamps:true})
-patientSchema.path('mobile').validateMobile=async function(mobile){
-    var mobileRegex=(/[1-9]{2}\d{8}/);
+//Mobile validations to validate mobile numbers
+patientSchema.path('mobile').validate(function(mobile){
+    var mobileRegex=/^[0-9]{10}$/;
+    console.log(mobileRegex.test(mobile))
     return mobileRegex.test(mobile)
-}
+},'mobile Validtion failed : Mobile number shld be of 10 digits and shld not start with 0')
 module.exports=HospitalDb.model('Patients',patientSchema)

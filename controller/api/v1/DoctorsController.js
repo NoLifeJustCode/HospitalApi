@@ -1,8 +1,18 @@
+//import Doctors and patients Model
 const doctors=require('../../../models/Doctors')
 const reports=require('../../../models/Reports')
+//import jwt to generate web token
 const jwt=require('jsonwebtoken')
-const setup=require('../../../config/setupProperties')
 
+//import setup to retrieve setup info
+const setup=require('../../../config/setupProperties')
+/*
+  The module Registers a Doctor based on info passed
+  Email is unique
+  Validations :
+            Email
+            Mobile
+ */
 module.exports.Register=async function(req,res){
     try{
         var doc={}
@@ -15,7 +25,7 @@ module.exports.Register=async function(req,res){
         doc['mobile']=req.body.mobile
         doc['password']=req.body.password
         doc['name']=req.body.name
-        console.log(doc)
+        console.log('doc',doc)
         var docData=await doctors.create(doc)
         // const data={
         //     id:docData._id,
@@ -34,7 +44,10 @@ module.exports.Register=async function(req,res){
 
 }
 
-
+/*
+ * Login generates a web token to be used to authenticate routes and provide access 
+ * password is excluded from jwtPayload
+ */
 module.exports.Login=async function(req,res){
     try{    console.log(req.body)
             var docData=await doctors.findOne({email:req.body.email})
@@ -61,12 +74,14 @@ module.exports.Login=async function(req,res){
         return res.send(504,{message:err.message})
     }
 }
-
+/**
+ * This query provides list of reports matching certain status queries
+ */
 module.exports.status=async function(req,res){
     try{
         var statusReports=await reports.find({
             Status:req.params.status
-        }).populate('patient','name mobile Age')
+        }).populate('patient','name mobile Age').populate('ReportCreatedBy','email mobile name')
         return res.status(200).json(statusReports)
     }catch(err){
         return res.send(504,{message:err.message})
