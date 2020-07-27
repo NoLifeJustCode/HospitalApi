@@ -15,7 +15,9 @@ let patientId=1;
  * setup server port and include chai expect to assert based on expectations
  */
 const expect=chai.expect
-const server='http://localhost:3000/';
+const server='http://localhost:8000/';
+
+//const mongoose=require('mongoose');
 /**
  * setup middleware to use chai http methods
  */

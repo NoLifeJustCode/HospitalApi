@@ -1,7 +1,7 @@
 //import mongoose and HospitalDB connection
 const mongoose=require('mongoose')
 
-const HospitalDb=require('../config/mongoose_HospitalDB')
+//const HospitalDb=require('../config/mongoose_HospitalDB')
 //import bcrypt to hash password and other sensitive info
 const bcyrpt=require('bcrypt')
 
@@ -12,6 +12,10 @@ const doctorSchema=new Schema({
         type:String,
         required:true,
     },
+    patients:[{
+            type:mongoose.SchemaTypes.ObjectId,
+            ref:'Patients'
+    }],
     email:{
         type:String,
         required:true,

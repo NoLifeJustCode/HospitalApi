@@ -11,7 +11,7 @@ const setup=require('../../../config/setupProperties')
 module.exports.Register=async function(req,res){
     try{
         var doc={}
-        console.log(req.body)
+     //   console.log(req.body)
         if(!req.body.mobile||!req.body.Age||!req.body.name)
             return res.send(422,{
                 message:'Invalid Sign up Data'
@@ -20,20 +20,68 @@ module.exports.Register=async function(req,res){
         doc['Age']=req.body.Age
         doc['name']=req.body.name
         var patient=await patients.findOne(doc)
+      //  console.log(req.user)
         if(!patient)
                 patient=await patients.create(doc);
+        doctors.findOneAndUpdate({_id:req.user.id,
+            'patients':{'$ne':patient.id}    
+        },{'$push':{'patients':patient.id}},{'upsert':true},(err,data)=>{
+           // console.log(err,data)
+        })
+            
         return res.status(200).json(patient)
 
     }catch(err){
         return res.send(504,err.message)
     }
 }
+
+
+/**
+ * 
+ * Update patient Info
+ * 
+ */
+
+module.exports.updatePatient=async function(req,res){
+    try{
+        var message='',status=200;
+        var patient=null;
+        if(!req.body.id||!req.body.mobile||!req.body.Age||!req.body.name)
+            {   status=422
+                message='Invalid Credentials'
+            }
+        else{
+            patient =await patients.findByIdAndUpdate(req.body.id,{
+                mobile:req.body.mobile,
+                Age:req.body.Age,
+                name:req.body.name
+            },{
+                runValidators:true,
+                upsert:true
+            })
+            if(!patient)
+                {   status=404
+                    message='patient id is not registered'
+                }
+        }
+        return res.status(status).json({
+            message:message,
+            patient:patient
+        })
+        
+    }catch(err){
+        return res.send(504,err.message)
+    }
+}
+
+
 /**
  * Create Report or update Report Status with updated time stamps
  */
 module.exports.createReport=async function(req,res){
     try{
-        console.log(req.params)
+      //  console.log(req.params)
         if(!req.body.status)
             return res.status(422).json('Incomplete Data')
         var patient=await patients.findById(req.params.id)
@@ -47,9 +95,9 @@ module.exports.createReport=async function(req,res){
             {Status:req.body.status},
             {new :true,upsert:true,runValidators:true}
             );
-        console.log(report)
+      //  console.log(report)
         await patient.update({'$addToSet':{Reports:report.id}})
-        console.log(patient)
+     //   console.log(patient)
         return res.status(200).json(report)
 
         
@@ -64,7 +112,9 @@ module.exports.createReport=async function(req,res){
 module.exports.all_reports=async function(req,res){
     try{
        
-        var patient=await patients.findById(req.params.id).populate('Reports','ReportCreatedBy status createdAt updatedAt')
+        var patient=await patients.findById(req.params.id,{select:'Reports'}).populate('Reports','ReportCreatedBy status createdAt updatedAt')
+        if(patient)
+        await patient.populate('ReportCreatedBy','name')
         if(!patient)
             return res.status(422).json('patient Record doesn\'t exists')
          
@@ -72,6 +122,7 @@ module.exports.all_reports=async function(req,res){
         return res.status(200).json(patient)
 
     }catch(err){
+      //  console.log(err)
         return res.send(504,err.message)
     }       
 }

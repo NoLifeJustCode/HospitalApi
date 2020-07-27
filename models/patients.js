@@ -1,6 +1,6 @@
 //import mongoose and HospitalDB connection 
 const mongoose=require('mongoose')
-const HospitalDb=require('../config/mongoose_HospitalDB')
+//const HospitalDb=require('../config/mongoose_HospitalDB')
 //import bcrypt to hash password
 const bcyrpt=require('bcrypt')
 const Schema=mongoose.Schema

@@ -16,7 +16,7 @@ const setup=require('../../../config/setupProperties')
 module.exports.Register=async function(req,res){
     try{
         var doc={}
-        
+        //console.log(JSON.parse(req.body))
         if(!req.body.email||!req.body.mobile||!req.body.password||!req.body.name)
             return res.send(422,{
                 message:'Invalid Sign up Data'
@@ -25,7 +25,7 @@ module.exports.Register=async function(req,res){
         doc['mobile']=req.body.mobile
         doc['password']=req.body.password
         doc['name']=req.body.name
-        console.log('doc',doc)
+       // console.log('doc',doc)
         var docData=await doctors.create(doc)
         // const data={
         //     id:docData._id,
@@ -38,7 +38,7 @@ module.exports.Register=async function(req,res){
            // data:data
         })    
     }catch(err){
-        console.log(err)
+      //  console.log(err)
         return res.send(504,{message:err.message})
     }
 
@@ -49,7 +49,7 @@ module.exports.Register=async function(req,res){
  * password is excluded from jwtPayload
  */
 module.exports.Login=async function(req,res){
-    try{    console.log(req.body)
+    try{    //console.log(req.body)
             var docData=await doctors.findOne({email:req.body.email})
             if(!docData)
                 return res.send(422,{
@@ -67,10 +67,15 @@ module.exports.Login=async function(req,res){
                 mobile:docData.mobile,
             }
             const token=jwt.sign(data,setup.secretKey,{expiresIn:setup.jwt_expiry})
-            res.send(200,{
-                message:'Login successfull',
-                token:token,
-            })
+            res.header('Access-Control-Allow-Origin', "http://localhost:3000");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            res.header( 'Access-Control-Allow-Credentials',true);
+            res.cookie('jwt',token,{maxAge:900000,secure:false})
+            
+             res.send(200,{
+                 message:'Login successfull',
+                 token:token,
+             })
     }
     catch(err){
         return res.send(504,{message:err.message})
@@ -84,7 +89,29 @@ module.exports.status=async function(req,res){
         var statusReports=await reports.find({
             Status:req.params.status
         }).populate('patient','name mobile Age').populate('ReportCreatedBy','email mobile name')
+     //   console.log('called')
         return res.status(200).json(statusReports)
+    }catch(err){
+        return res.send(504,{message:err.message})
+    }
+}
+
+module.exports.getPatients=async function(req,res){
+    try{
+        //var patients=await doctors.findById(req.user.id,{select:'patients '}).populate('patients','Reports').populate('Reports')
+     //   console.log('patients Called')
+        var patients=await doctors.findById(req.user.id).select('email name mobile patients').populate(
+            {
+                path:'patients',
+                select:'Reports name mobile Age',
+                populate:{
+                    path:'Reports',
+                    select:'Status'
+                }
+            }
+        )
+      //  console.log("patients",patients)
+        return res.status(200).send(patients)    
     }catch(err){
         return res.send(504,{message:err.message})
     }

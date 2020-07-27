@@ -5,6 +5,7 @@
  1.make sure 'pwd' is project directory
  2.use 'npm install' to install all dependencies needed for the project to execute without errors
  3.use 'npm start' to start the server 
+ 3. use 'npm start "test"' to start the test server
  4.use 'npm test' to test the server with predefined tests 
 
 

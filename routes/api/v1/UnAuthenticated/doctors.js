@@ -14,4 +14,7 @@ const doctorController=require('../../../../controller/api/v1/doctorsController'
 router.post('/register',doctorController.Register)
  //Router Login to Login Action
 router.post('/Login',doctorController.Login)
+router.get('/working',function(req,res){
+    return res.status('200').send('success')
+})
 module.exports=router
